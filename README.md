@@ -10,7 +10,7 @@ Please check each code file for the exact Python packages required.
 
 ## Running the tests
 
-Please download data and save them at customised location before running the code. Change of file path in the code is required.
+Please download data and save them at customised location before running the code. Change of file path in the code is required. Substitute the region name in the code if needed.
 
 
 ## Author
