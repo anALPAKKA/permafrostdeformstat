@@ -1,0 +1,162 @@
+#This example code was the code used for Pearson correlation analysis in Inuvik region
+#'invk' refers to Inuvik, which was the name used for Mackenzie River Delta region during analysis
+# Load 10km resolution subsidence data
+subsidence_10km, lons_10km, lats_10km = prepare_ERA_data('invk', '201617', '10km', 'Band1')
+
+# Load all ERA5 datasets
+era_variables = {
+    "skttdd": "skt",
+    "stl1tdd": "stl1",
+    "stl2tdd": "stl2",
+    "stl3tdd": "stl3",
+    "stl4tdd": "stl4",
+    "slhf": "slhf",
+    "sd": "sd",
+    "sf": "sf",
+    "swvl1": "swvl1",
+    "swvl4": "swvl4",
+    "tp": "tp",
+    "ro": "ro",
+}
+
+
+
+custom_variable_order = [
+    "swvl1", "swvl4",              # Soil water
+    "sd", "sf", "tp", "ro",        # Snow & Precipitation
+    "slhf",                        # Radiation
+    "skttdd", "stl1tdd", "stl2tdd", "stl3tdd", "stl4tdd",  # Temperature
+    
+]
+
+era_data = {}
+for key, varname in era_variables.items():
+    era_data[key], _, _ = prepare_ERA_data('invk', '201617', key, varname)
+
+# Ensure shape consistency
+for key in era_data:
+    assert era_data[key].shape == subsidence_10km.shape, f"Shape mismatch: {key} ({era_data[key].shape})"
+
+# Define custom colormap
+reds_cmap = LinearSegmentedColormap.from_list("reds_cmap", ["#f5c6c6", "#e57373", "#c0392b", "#7f0000"])
+
+# Reshape cluster assignments to match subsidence data
+cluster_assignments_2d = cluster_assignments.reshape(subsidence_10km.shape)
+
+# ========== Cluster 2: Floodplain ==========
+cluster_2_indices = np.argwhere(cluster_assignments_2d == 1)
+subsidence_values_2 = np.array([subsidence_10km[row, col] for row, col in cluster_2_indices])
+era_cluster_2 = {key: np.array([era_data[key][row, col] for row, col in cluster_2_indices]) for key in era_data}
+
+df_2 = pd.DataFrame(era_cluster_2)
+df_2["deformation"] = subsidence_values_2
+corr_2 = df_2.corr()
+mask = np.triu(np.ones_like(corr_2, dtype=bool))
+
+plt.figure(figsize=(12, 10))
+sns.heatmap(
+    corr_2.abs(),
+    annot=corr_2,
+    fmt=".2f",
+    cmap=reds_cmap,
+    vmin=0, vmax=1,
+    mask=mask,
+    square=True,
+    cbar=True,
+    xticklabels=corr_2.columns,
+    yticklabels=corr_2.columns,
+    annot_kws={"size": 10, "color": "black"}
+)
+plt.title('Pearson Correlation: Inuvik (2016–2017) - Cluster 2 (Floodplain)')
+plt.tight_layout()
+plt.show()
+
+# Extract and sort deformation correlation (and save the variable order)
+deformation_corr_2 = corr_2["deformation"].drop("deformation")
+variable_order = deformation_corr_2.abs().sort_values(ascending=False).index
+deformation_corr_2 = deformation_corr_2.reindex(custom_variable_order)
+
+plt.figure(figsize=(10, 5))
+sns.barplot(x=deformation_corr_2.index, y=deformation_corr_2.values, palette="Reds_r")
+plt.axhline(0, color='gray', linestyle='--')
+plt.ylabel("Pearson Correlation with Deformation")
+plt.xlabel("Variables")
+plt.title("Inuvik Deformation Correlation in Floodplain Region 2016–2017")
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
+plt.show()
+
+# ========== Cluster 1: Non-Floodplain ==========
+cluster_1_indices = np.argwhere(cluster_assignments_2d == 0)
+subsidence_values_1 = np.array([subsidence_10km[row, col] for row, col in cluster_1_indices])
+era_cluster_1 = {key: np.array([era_data[key][row, col] for row, col in cluster_1_indices]) for key in era_data}
+
+df_1 = pd.DataFrame(era_cluster_1)
+df_1["deformation"] = subsidence_values_1
+corr_1 = df_1.corr()
+mask = np.triu(np.ones_like(corr_1, dtype=bool))
+
+plt.figure(figsize=(12, 10))
+sns.heatmap(
+    corr_1.abs(),
+    annot=corr_1,
+    fmt=".2f",
+    cmap=reds_cmap,
+    vmin=0, vmax=1,
+    mask=mask,
+    square=True,
+    cbar=True,
+    xticklabels=corr_1.columns,
+    yticklabels=corr_1.columns,
+    annot_kws={"size": 10, "color": "black"}
+)
+plt.title('Pearson Correlation: Inuvik (2016–2017) - Cluster 1 (Non-Floodplain)')
+plt.tight_layout()
+plt.show()
+
+# Use same variable order as floodplain
+deformation_corr_1 = corr_1["deformation"].drop("deformation")
+deformation_corr_1 = deformation_corr_1.reindex(custom_variable_order)
+
+plt.figure(figsize=(10, 5))
+sns.barplot(x=deformation_corr_1.index, y=deformation_corr_1.values, palette="Reds_r")
+plt.axhline(0, color='gray', linestyle='--')
+plt.ylabel("Pearson Correlation with Deformation")
+plt.xlabel("Variables")
+plt.title("Inuvik Deformation Correlation in Non-Floodplain Region 2016–2017")
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
+plt.show()
+
+
+
+
+# === 1. Define custom variable order manually ===
+custom_order = ['swvl1', 'swvl4', 'sd', 'sf', 'tp', 'ro', 'slhf', 
+                'skttdd', 'stl1tdd', 'stl2tdd', 'stl3tdd', 'stl4tdd']
+
+# === 2. Combine correlations into one DataFrame ===
+df_compare = pd.DataFrame({
+    'Variable': deformation_corr_1.index,  # assumes both df have same index set
+    'Non-Floodplain': deformation_corr_1.values,
+    'Floodplain': deformation_corr_2[deformation_corr_1.index].values  # align index to ensure match
+})
+
+# Reorder variables
+df_compare = df_compare.set_index('Variable').loc[custom_order].reset_index()
+
+# === 3. Melt for seaborn ===
+df_melted = df_compare.melt(id_vars='Variable', var_name='Region', value_name='Correlation')
+
+# === 4. Plot ===
+plt.figure(figsize=(12, 6))
+sns.barplot(data=df_melted, x='Variable', y='Correlation', hue='Region', palette=['#3366CC', '#CC3333'])
+
+plt.axhline(0, color='gray', linestyle='--')
+plt.ylabel('Pearson Correlation with Deformation')
+plt.xlabel('Variables')
+plt.title('Inuvik Deformation Correlation Comparison (2016–2017)')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.legend(title='Region')
+plt.show()
