@@ -33,6 +33,9 @@ The analysis is organized into three main components, each in a separate file:
 - robustness.py  
   Performs Kolmogorov–Smirnov (K–S) tests to assess the robustness of subset data distribution.
 
+- ERAprocess.sh
+  Processes downloaded different ERA-Land data to variables that can be used for correlation analysis. 
+
 
 # Data Availability
 ERA-Land climate forcings: https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land?tab=overview
