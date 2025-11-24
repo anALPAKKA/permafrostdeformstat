@@ -39,10 +39,10 @@ The analysis is organized into three main components, each in a separate file:
 
 # Data Availability
 ERA-Land climate forcings: https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land?tab=overview
-MERIT Hydro topography data: https://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_Hydro/
-Sentinel-1 data: https://scihub.copernicus.eu
-Intermediate deformation scenes used in this study were acquired and processed under commercial license and hence cannot be redistributed.
-10 km Permafrost Deformation: see example data in this repository (processed with CDO remapdis command).
+MERIT Hydro topography data: [https://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_Hydro/](https://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_DEM/)
+Sentinel-1 data: [https://scihub.copernicus.eu](https://dataspace.copernicus.eu/data-collections/sentinel-data/sentinel-1)
+PALSAR-2 level 1 product: https://search.asf.alaska.edu
+10 km Permafrost Deformation: see example data at .
 
 
 
@@ -52,7 +52,7 @@ Intermediate deformation scenes used in this study were acquired and processed u
 
 ## References
 Copernicus Climate Change Service (C3S)(2019): ERA5-Land hourly data from 1950 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS). DOI: 10.24381/cds.e2161bac
-Yamazaki D., D. Ikeshima, J. Sosa, P.D. Bates, G.H. Allen, T.M. Pavelsky, MERIT Hydro: A high-resolution global hydrography map based on latest topography datasets, Water Resources Research, vol.55, pp.5053-5073, 2019, doi: 10.1029/2019WR024873
+Yamazaki, D., D. Ikeshima, R. Tawatari, T. Yamaguchi, F. O'Loughlin, J. C. Neal, C. C. Sampson, S. Kanae, and P. D. Bates (2017), A high-accuracy map of global terrain elevations, Geophys. Res. Lett., 44, 5844–5853, doi:10.1002/2017GL072874.
 
 
 ## License
