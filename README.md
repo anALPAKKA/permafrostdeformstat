@@ -50,6 +50,10 @@ Intermediate deformation scenes used in this study were acquired and processed u
 
 * **Zhijun Liu** - *Initial work* - (https://github.com/anALPAKKA) zhijun.liu@mpimet.mpg
 
+## References
+Copernicus Climate Change Service (C3S)(2019): ERA5-Land hourly data from 1950 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS). DOI: 10.24381/cds.e2161bac
+Yamazaki D., D. Ikeshima, J. Sosa, P.D. Bates, G.H. Allen, T.M. Pavelsky, MERIT Hydro: A high-resolution global hydrography map based on latest topography datasets, Water Resources Research, vol.55, pp.5053-5073, 2019, doi: 10.1029/2019WR024873
+
 
 ## License
 
