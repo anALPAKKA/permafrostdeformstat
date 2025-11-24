@@ -1,0 +1,149 @@
+#This example code was the code used to calculated the averaged Pearson correlation coefficients for 3 years in Inuvik region
+#'invk' refers to Inuvik, which was the name used for Mackenzie River Delta region during analysis
+#Load 10km resolution subsidence data 
+#This code is used together with the clustering algorithm on histograms
+
+
+
+
+def prepare_topo_data(loc, vartype, varname):
+    '''Prepare topography data'''
+    filepath = filepaths[f"{loc}_{vartype}"]
+    ds = Dataset(filepath, mode='r')
+
+    lon_var_name = 'lon' if 'lon' in ds.variables else 'longitude'
+    lat_var_name = 'lat' if 'lat' in ds.variables else 'latitude'
+    
+    lons = ds.variables[lon_var_name][:]
+    lats = ds.variables[lat_var_name][:]
+    var_data = ds.variables[varname][:]
+    
+    ds.close()
+    
+    return var_data, lons, lats
+
+
+def _flatten_and_mask(arr_dict):
+    """Flatten each array and drop any row with NaN in *any* variable."""
+    # stack as columns in consistent order
+    cols = list(arr_dict.keys())
+    flat = {k: arr_dict[k].ravel() for k in cols}
+    df = pd.DataFrame(flat)
+    df = df.replace([np.inf, -np.inf], np.nan).dropna(axis=0, how='any')
+    return df, len(df), cols
+
+def compute_year_corr(year):
+    """Return (corr_df, n_samples) for one year (whole region, no cluster split)."""
+    # deformation at 10 km
+    deform, lons10, lats10 = prepare_ERA_data('invk', year, '10km', 'Band1')
+
+    # load ERA vars
+    d = {}
+    for k,(vartype,varname) in era_variables.items():
+        d[k], _, _ = prepare_ERA_data('invk', year, vartype, varname)
+
+    # ensure shapes match (add asserts to catch mismatches early)
+    base_shape = deform.shape
+    for k in d:
+        assert d[k].shape == base_shape, f"Shape mismatch for {k}: {d[k].shape} vs {base_shape}"
+    assert elv_data.shape == base_shape, f"Topo elv shape mismatch: {elv_data.shape} vs {base_shape}"
+    assert slp_data.shape == base_shape, f"Topo slp shape mismatch: {slp_data.shape} vs {base_shape}"
+
+    # flatten + mask across all variables
+    arrs = {**d, "elv": elv_data, "slp": slp_data, "deformation": deform}
+    df, n, cols = _flatten_and_mask(arrs)
+
+    # reorder columns for consistency
+    df = df[custom_order]
+    corr = df.corr()   # Pearson
+    return corr, n
+
+
+
+
+
+
+
+# --- Config ---
+years = ["201516", "201617", "201718"]
+
+
+# Load all ERA5 datasets
+# ERA5 vars: key -> (vartype in filepaths, varname inside netcdf)
+era_variables = {
+    "skttdd": ("skttdd", "skt"),
+    "stl1tdd": ("stl1tdd", "stl1"),
+    "stl2tdd": ("stl2tdd", "stl2"),
+    "stl3tdd": ("stl3tdd", "stl3"),
+    "stl4tdd": ("stl4tdd", "stl4"),
+    "slhf": ("slhf", "slhf"),
+    "sd":   ("sd",   "sd"),
+    "sf":   ("sf",   "sf"),
+    "swvl1":("swvl1","swvl1"),
+    "swvl4":("swvl4","swvl4"),
+    "tp":   ("tp",   "tp"),
+    "ro":   ("ro",   "ro"),
+}
+
+topos = {
+    'elv': 'Elevation',
+    'slp': 'Slope',
+}
+
+
+
+
+era_data = {}
+for key, varname in era_variables.items():
+    era_data[key], _, _ = prepare_ERA_data('invk', '201617', key, varname)
+
+
+# Topography (static)
+elv_year = "201516"
+elv_vartype, elv_varname = "elv", "Band1"
+slp_vartype, slp_varname = "slp", "slope"   
+
+# Variable order for plotting
+custom_order = ['swvl1','swvl4','sd','sf','tp','ro','slhf',
+                'skttdd','stl1tdd','stl2tdd','stl3tdd','stl4tdd','elv','slp','deformation']
+
+# Colormap
+reds_cmap = LinearSegmentedColormap.from_list("reds_cmap",
+                                              ["#f5c6c6", "#e57373", "#c0392b", "#7f0000"])
+
+
+
+
+# --- Compute per-year matrices + Fisher-z weighted average ---
+corr_list = []
+weights = []   
+for y in years:
+    c, n = compute_year_corr(y)
+    corr_list.append(c)
+    weights.append(max(n - 3, 1))  
+
+# Stack to 3D array (years × vars × vars)
+C = np.stack([c.values for c in corr_list], axis=0)  # shape: (nyears, p, p)
+# Fisher z-transform
+Z = np.arctanh(np.clip(C, -0.999999, 0.999999))
+w = np.asarray(weights)[:, None, None]
+Zbar = np.sum(w * Z, axis=0) / np.sum(w, axis=0)
+C_avg = np.tanh(Zbar)
+
+# Make a DataFrame with labels
+avg_corr = pd.DataFrame(C_avg, index=custom_order, columns=custom_order)
+
+# --- Plot lower-triangle heatmap: colors = |r|, annotations = signed r ---
+mask = np.triu(np.ones_like(avg_corr, dtype=bool))  # mask upper triangle (incl. diag)
+plt.figure(figsize=(12,10))
+sns.heatmap(
+    avg_corr.abs(),
+    annot=avg_corr, fmt=".2f",
+    cmap=reds_cmap, vmin=0, vmax=1,
+    mask=mask, square=True, cbar=True,
+    xticklabels=avg_corr.columns, yticklabels=avg_corr.index,
+    annot_kws={"size": 9, "color": "black"}
+)
+plt.title("Average Pearson Correlations between Variables and Averaged Deformation\n(MRD 2015–2018)")
+plt.tight_layout()
+plt.show()
