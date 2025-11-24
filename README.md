@@ -39,10 +39,14 @@ The analysis is organized into three main components, each in a separate file:
 
 # Data Availability
 ERA-Land climate forcings: https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land?tab=overview
+
 MERIT Hydro topography data: [https://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_Hydro/](https://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_DEM/)
+
 Sentinel-1 data: [https://scihub.copernicus.eu](https://dataspace.copernicus.eu/data-collections/sentinel-data/sentinel-1)
+
 PALSAR-2 level 1 product: https://search.asf.alaska.edu
-10 km Permafrost Deformation: see example data at .
+
+10 km Permafrost Deformation: [zenodo] .
 
 
 
