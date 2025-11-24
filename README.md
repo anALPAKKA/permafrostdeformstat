@@ -10,8 +10,37 @@ Please check each code file for the exact Python packages required.
 
 ## Running the tests
 
-Please download data and save them at customised location before running the code. Change of file path in the code is required. Substitute the region name in the code if needed.
-Sample data will be available to reviewers only prior to publication. Public access will be provided after the manuscript is published.
+Please prepare the input data and save them in your preferred local directory before running the code. You will need to:
+
+1. Adjust the file paths in the scripts to match your local setup.
+2. Substitute the region name in the code where appropriate.
+
+The analysis is organized into three main components, each in a separate file:
+
+- invk_cluster_hist.ipynb  
+  This is the main notebook. It:
+    • Imports all required packages  
+    • Defines most of the shared functions  
+    • Provides the core workflow for distribution-based upscaling
+    • Provides the core workflow for our heuristic clustering algorithm on histrograms
+  Both pearson_corr.py and robustness.py may depend on functions defined in this notebook.
+
+- pearson_corr.py  
+  Computes Pearson correlation coefficients between:
+    • Annual permafrost deformation (aggregated to 10 km using distance-weighted averaging), and
+    • Selected climatic forcings from ERA5-Land and topographic factors from MERIT.
+
+- robustness.py  
+  Performs Kolmogorov–Smirnov (K–S) tests to assess the robustness of subset data distribution.
+
+
+# Data Availability
+ERA-Land climate forcings: https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land?tab=overview
+MERIT Hydro topography data: https://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_Hydro/
+Sentinel-1 data: https://scihub.copernicus.eu
+Intermediate deformation scenes used in this study were acquired and processed under commercial license and hence cannot be redistributed.
+10 km Permafrost Deformation: see example data in this repository (processed with CDO remapdis command).
+
 
 
 ## Author
