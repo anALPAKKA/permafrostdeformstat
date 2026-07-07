@@ -17,13 +17,17 @@ Please prepare the input data and save them in your preferred local directory be
 
 The analysis is organized into three main components, each in a separate file:
 
-- invk_cluster_hist.ipynb  
+- functions.py (2026 June)
   This is the main notebook. It:
     • Imports all required packages  
-    • Defines most of the shared functions  
-    • Provides the core workflow for distribution-based upscaling
-    • Provides the core workflow for our heuristic clustering algorithm on histrograms
-  Both pearson_corr.py and robustness.py may depend on functions defined in this notebook.
+    • Defines all functions used for distribution upscaling, different approaches of clustering, robustness check and plotting
+    • Provides the latest  and most efficient distribution upscaling and shape-oriented clustering algorithms
+
+All files below were uploaded before before 2026 January.
+- invk_cluster_hist.ipynb  
+    • Demonstrates the core workflow for distribution-based upscaling
+    • Demonstrates the core workflow for our shape-oriented clustering algorithm on histrograms
+  Both pearson_corr.py and robustness.py may depend on functions defined in this notebook. Note that the upscaling and clustering fucntions are different from the latest version. This notebook is primarily for demonstration. 
 
 - pearson_corr.py  
   Computes Pearson correlation coefficients between:
