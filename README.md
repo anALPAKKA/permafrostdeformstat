@@ -1,4 +1,4 @@
-# Distribution-based Upscaling on High-Resolution InSAR Permafrost Deformation
+# Distribution-based Upscaling and Shape-Oriented Distribution Clustering on High-Resolution InSAR Permafrost Deformation
 
 Code written and data used for the manuscript of permafrost deformation upscaling, part of Zhijun Liu's PhD project
 
