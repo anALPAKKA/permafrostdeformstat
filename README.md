@@ -61,7 +61,7 @@ Sentinel-1 data: [https://scihub.copernicus.eu](https://dataspace.copernicus.eu/
 
 PALSAR-2 level 1 product: https://search.asf.alaska.edu
 
-10 km Permafrost Deformation: [zenodo] .
+10 km Permafrost Deformation: [[zenodo]](https://zenodo.org/records/17780849) .
 
 
 
