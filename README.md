@@ -18,20 +18,31 @@ Please prepare the input data and save them in your preferred local directory be
 The analysis is organized into three main components, each in a separate file:
 
 - functions.py (2026 June)
+
   This is the main notebook. It:
-    • Imports all required packages  
-    • Defines all functions used for distribution upscaling, different approaches of clustering, robustness check and plotting
+  
+    • Imports all required packages
+  
+    • Defines all functions used for distribution upscaling, different approaches of clustering, robustness check and plotting.
+  
     • Provides the latest  and most efficient distribution upscaling and shape-oriented clustering algorithms
 
 All files below were uploaded before before 2026 January.
-- invk_cluster_hist.ipynb  
-    • Demonstrates the core workflow for distribution-based upscaling
-    • Demonstrates the core workflow for our shape-oriented clustering algorithm on histrograms
-  Both pearson_corr.py and robustness.py may depend on functions defined in this notebook. Note that the upscaling and clustering fucntions are different from the latest version. This notebook is primarily for demonstration. 
+
+- invk_cluster_hist.ipynb
+  The upscaling and clustering fucntions are different from the latest version in data handling, but the mathematical theory behind is the same. This notebook is primarily for demonstrating the execution of the analysis.
+  
+    • Demonstrates the core workflow for distribution-based upscaling;
+  
+    • Demonstrates the core workflow for our shape-oriented clustering algorithm on histrograms;
+  
+  Both pearson_corr.py and robustness.py may depend on functions defined in this notebook. 
 
 - pearson_corr.py  
   Computes Pearson correlation coefficients between:
+  
     • Annual permafrost deformation (aggregated to 10 km using distance-weighted averaging), and
+  
     • Selected climatic forcings from ERA5-Land and topographic factors from MERIT.
 
 - robustness.py  
